@@ -1,0 +1,30 @@
+{
+  "name": "visual_pagerank_algorithm",
+  "version": "1.0.0",
+  "description": "The pagerank algorithm visualised in typescript",
+  "main": "index.js",
+  "scripts": {
+    "start": "tsc",
+    "lint": "eslint . --ext .ts", 
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Unknown807/Visual-Pagerank-Algorithm.git"
+  },
+  "keywords": [],
+  "author": "Unknown807",
+  "bugs": {
+    "url": "https://github.com/Unknown807/Visual-Pagerank-Algorithm/issues"
+  },
+  "homepage": "https://github.com/Unknown807/Visual-Pagerank-Algorithm#readme",
+  "devDependencies": {
+    "@types/jest": "^26.0.23",
+    "@typescript-eslint/eslint-plugin": "^4.26.0",
+    "@typescript-eslint/parser": "^4.26.0",
+    "eslint": "^7.28.0",
+    "jest": "^27.0.4",
+    "ts-jest": "^27.0.2",
+    "typescript": "^4.3.2"
+  }
+}

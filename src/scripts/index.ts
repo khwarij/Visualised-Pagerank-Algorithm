@@ -1,4 +1,4 @@
-import { Core } from "cytoscape";
+import { Core, EventObject, NodeSingular } from "cytoscape";
 const cytoscape = require("cytoscape");
 
 const cy: Core = cytoscape({
@@ -44,8 +44,40 @@ const cy: Core = cytoscape({
 
 // number of pages added
 let nodeCounter: number = 0;
+let prevSelectedNodeID: string | null = null;
+
+// cytoscape node event handlers
+
+cy.on('tap', 'node', function(e: EventObject): void {
+  
+  let selectedNode: NodeSingular = e.target;
+  let selectedNodeID: string = selectedNode.id();
+
+  console.log(selectedNodeID);
+
+  if (prevSelectedNodeID !== null && prevSelectedNodeID !== selectedNodeID) {
+    cy.add({
+      group: "edges",
+      data: {
+        target: selectedNodeID,
+        source: prevSelectedNodeID
+      }
+    })
+  }
+  
+  selectedNode.select();
+  prevSelectedNodeID = selectedNodeID;
+});
+
+// button event handlers
 
 const addPageButton = <HTMLButtonElement>document.getElementById("add-button");
+const deletePageButton = <HTMLButtonElement>document.getElementById("delete-button");
+
+deletePageButton?.addEventListener("click", function(): void {
+  let selectedNode = cy.$(":selected");
+  console.log();
+});
 
 addPageButton?.addEventListener("click", function(): void {
   cy.add({
@@ -61,4 +93,12 @@ addPageButton?.addEventListener("click", function(): void {
   });
 
   nodeCounter++;
+  calculatePagerank();
 });
+
+
+// Page rank algorithm
+
+function calculatePagerank(): void {
+  console.log("real time calculate pagerank");
+}

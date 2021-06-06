@@ -6,11 +6,7 @@
     top: 15%;
 }
 
-#form-table {
-    text-align: left;
-}
-
-span, input {
+#options > * {
     margin: 10px;
 }
 

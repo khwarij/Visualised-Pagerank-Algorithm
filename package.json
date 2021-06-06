@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/Unknown807/Visual-Pagerank-Algorithm#readme",
   "devDependencies": {
+    "@types/cytoscape": "^3.14.15",
     "@types/jest": "^26.0.23",
     "@typescript-eslint/eslint-plugin": "^4.26.0",
     "@typescript-eslint/parser": "^4.26.0",

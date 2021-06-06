@@ -1,7 +1,7 @@
 const cytoscape = require("cytoscape");
 
 var cy = cytoscape({
-    container: document.getElementById('cy'),
+    container: document.getElementById('canvas'),
     elements: [
       { data: { id: 'a' } },
       { data: { id: 'b' } },
@@ -12,4 +12,4 @@ var cy = cytoscape({
           target: 'b'
         }
       }]
-  });
+});

@@ -1,0 +1,19 @@
+
+#canvas {
+    height: 85%;
+    width: 99%;
+    position: absolute;
+    top: 15%;
+}
+
+#form-table {
+    text-align: left;
+}
+
+span, input {
+    margin: 10px;
+}
+
+#heading {
+    text-decoration: underline;
+}

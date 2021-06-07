@@ -48,12 +48,27 @@ let prevSelectedNodeID: string | null = null;
 
 // cytoscape node event handlers
 
-cy.on('tap', 'node', function(e: EventObject): void {
+// Decides to select a node to create an edge between two nodes or unselect
+// it in case it was a misclick by the user, etc.
+cy.on("tap", function(e: EventObject): void {
+  if (e.target === cy || e.target.isEdge()) {
+    unselectNode();
+  } else {
+    selectNode(e.target);
+  }
+});
+
+function unselectNode(): void {
+  cy.nodes("[id = '"+prevSelectedNodeID+"']").unselect();
+  cy.nodes("[id = '"+prevSelectedNodeID+"']").style("border-color", "black");
+  prevSelectedNodeID = null;
+}
+
+function selectNode(selectedNode: NodeSingular): void {
   
-  let selectedNode: NodeSingular = e.target;
   let selectedNodeID: string = selectedNode.id();
 
-  console.log(selectedNodeID);
+  cy.nodes("[id = '"+selectedNodeID+"']").style("border-color", "red");
 
   if (prevSelectedNodeID !== null && prevSelectedNodeID !== selectedNodeID) {
     cy.add({
@@ -63,11 +78,20 @@ cy.on('tap', 'node', function(e: EventObject): void {
         source: prevSelectedNodeID
       }
     })
+    
+    cy.nodes("[id = '"+prevSelectedNodeID+"']").style("border-color", "black");
+    cy.nodes("[id = '"+selectedNodeID+"']").style("border-color", "black");
+    
+    selectedNode.unselect();
+    prevSelectedNodeID = null;
+
+    calculatePagerank();
+
+  } else {
+    selectedNode.select();
+    prevSelectedNodeID = selectedNodeID; 
   }
-  
-  selectedNode.select();
-  prevSelectedNodeID = selectedNodeID;
-});
+}
 
 // button event handlers
 
@@ -75,8 +99,7 @@ const addPageButton = <HTMLButtonElement>document.getElementById("add-button");
 const deletePageButton = <HTMLButtonElement>document.getElementById("delete-button");
 
 deletePageButton?.addEventListener("click", function(): void {
-  let selectedNode = cy.$(":selected");
-  console.log();
+  let selectedNodeId = cy.$(":selected").id();
 });
 
 addPageButton?.addEventListener("click", function(): void {

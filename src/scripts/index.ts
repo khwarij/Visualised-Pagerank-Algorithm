@@ -1,4 +1,4 @@
-import { Core, EventObject, NodeSingular } from "cytoscape";
+import { Core, EdgeSingular, EventObject, NodeSingular } from "cytoscape"; // from @types/cytoscape
 const cytoscape = require("cytoscape");
 
 const cy: Core = cytoscape({
@@ -97,9 +97,20 @@ function selectNode(selectedNode: NodeSingular): void {
 
 const addPageButton = <HTMLButtonElement>document.getElementById("add-button");
 const deletePageButton = <HTMLButtonElement>document.getElementById("delete-button");
+const resetButton = <HTMLButtonElement>document.getElementById("reset-button");
 
 deletePageButton?.addEventListener("click", function(): void {
-  let selectedNodeId = cy.$(":selected").id();
+  let selectedObj: NodeSingular | EdgeSingular = cy.$(":selected");
+  
+  if(selectedObj.isNode()) {
+    let edgesToRemove = selectedObj.connectedEdges();
+    edgesToRemove.remove();
+  }
+
+  selectedObj.remove();
+
+  unselectNode();
+  calculatePagerank();
 });
 
 addPageButton?.addEventListener("click", function(): void {
@@ -119,6 +130,7 @@ addPageButton?.addEventListener("click", function(): void {
   calculatePagerank();
 });
 
+})
 
 // Page rank algorithm
 

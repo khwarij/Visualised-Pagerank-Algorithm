@@ -43,7 +43,7 @@ const cy: Core = cytoscape({
 //let dFactor: number = Number((<HTMLInputElement>document.getElementById("d-factor")).value);
 
 // number of pages added
-let nodeCounter: number = 0;
+let nodeCounter = 0;
 let prevSelectedNodeID: string | null = null;
 
 // cytoscape node event handlers
@@ -66,7 +66,7 @@ function unselectNode(): void {
 
 function selectNode(selectedNode: NodeSingular): void {
   
-  let selectedNodeID: string = selectedNode.id();
+  const selectedNodeID: string = selectedNode.id();
 
   cy.nodes("[id = '"+selectedNodeID+"']").style("border-color", "red");
 
@@ -77,7 +77,7 @@ function selectNode(selectedNode: NodeSingular): void {
         target: selectedNodeID,
         source: prevSelectedNodeID
       }
-    })
+    });
     
     cy.nodes("[id = '"+prevSelectedNodeID+"']").style("border-color", "black");
     cy.nodes("[id = '"+selectedNodeID+"']").style("border-color", "black");
@@ -100,10 +100,10 @@ const deletePageButton = <HTMLButtonElement>document.getElementById("delete-butt
 const resetButton = <HTMLButtonElement>document.getElementById("reset-button");
 
 deletePageButton?.addEventListener("click", function(): void {
-  let selectedObj: NodeSingular | EdgeSingular = cy.$(":selected");
+  const selectedObj: NodeSingular | EdgeSingular = cy.$(":selected");
   
   if(selectedObj.isNode()) {
-    let edgesToRemove = selectedObj.connectedEdges();
+    const edgesToRemove = selectedObj.connectedEdges();
     edgesToRemove.remove();
   }
 
@@ -130,7 +130,9 @@ addPageButton?.addEventListener("click", function(): void {
   calculatePagerank();
 });
 
-})
+resetButton?.addEventListener("click", function(): void {
+  location.reload();
+});
 
 // Page rank algorithm
 

@@ -40,13 +40,12 @@ const cy: Core = cytoscape({
     },
 });
 
-//let dFactor: number = Number((<HTMLInputElement>document.getElementById("d-factor")).value);
-
-// number of pages added
+// Number of pages added
 let nodeCounter = 0;
+// Used to create an edge between two nodes
 let prevSelectedNodeID: string | null = null;
 
-// cytoscape node event handlers
+// Cytoscape node event handlers
 
 // Decides to select a node to create an edge between two nodes or unselect
 // it in case it was a misclick by the user, etc.
@@ -93,7 +92,7 @@ function selectNode(selectedNode: NodeSingular): void {
   }
 }
 
-// button event handlers
+// Button event handlers
 
 const addPageButton = <HTMLButtonElement>document.getElementById("add-button");
 const deletePageButton = <HTMLButtonElement>document.getElementById("delete-button");
@@ -136,6 +135,53 @@ resetButton?.addEventListener("click", function(): void {
 
 // Page rank algorithm
 
+// Creates the adjacency matrix to store edges between all nodes
+function formAdjacencyMatrix(): number[][] {
+  const matrix: number[][] = [];
+  
+  const nodes = cy.nodes();
+
+  for (let r=0; r<nodes.length; r++) {
+    const newRow: number[] = new Array(nodes.length);
+    newRow.fill(0);
+
+    const currentSourceNode = nodes[r];
+
+    const targetNodes = currentSourceNode.connectedEdges().targets();
+    
+    for (let i=0; i<targetNodes.length; i++) {
+      const currentTargetNode: NodeSingular = targetNodes[i];
+
+      if (currentTargetNode !== currentSourceNode) {
+        newRow[Number(currentTargetNode.id())] = 1;
+      }
+    }
+
+    matrix.push(newRow);
+  }
+  
+  return matrix;
+}
+
+
+
 function calculatePagerank(): void {
-  console.log("real time calculate pagerank");
+  let dFactor = Number((<HTMLInputElement>document.getElementById("d-factor")).value);
+  
+  if (isNaN(dFactor) || dFactor < 0 || dFactor > 1) {
+    dFactor = 0;
+  }
+  
+  let matrix: number[][] = formAdjacencyMatrix();
+
+  // console.log("----------");
+
+  // for (let r=0; r<matrix[0].length; r++) {
+  //   let row = "";
+  //   for (let c=0; c<matrix[0].length; c++) {
+  //     row += matrix[r][c];
+  //   }
+  //   console.log(row);
+  // }
+  
 }

@@ -1,4 +1,4 @@
-import { Core, EdgeSingular, EventObject, NodeSingular } from "cytoscape"; // from @types/cytoscape
+import { Core, EdgeSingular, EventObject, NodeCollection, NodeSingular } from "cytoscape"; // from @types/cytoscape
 const cytoscape = require("cytoscape");
 
 const cy: Core = cytoscape({
@@ -145,9 +145,8 @@ function formAdjacencyMatrix(): number[][] {
     const newRow: number[] = new Array(nodes.length);
     newRow.fill(0);
 
-    const currentSourceNode = nodes[r];
-
-    const targetNodes = currentSourceNode.connectedEdges().targets();
+    const currentSourceNode: NodeSingular = nodes[r];
+    const targetNodes: NodeCollection = currentSourceNode.connectedEdges().targets();
     
     for (let i=0; i<targetNodes.length; i++) {
       const currentTargetNode: NodeSingular = targetNodes[i];
@@ -163,7 +162,38 @@ function formAdjacencyMatrix(): number[][] {
   return matrix;
 }
 
+// Gets the total number of outgoing links a page has to another page
+// used to get the full probability matrix
+function getTotalOutgoingEdges(row: number[]): number {
+  let rowTotal = 0;
+  for (let c=0; c<row.length; c++) {
+    if (row[c] > 0) {
+      rowTotal++;
+    }
+  }
 
+  return rowTotal;
+}
+
+// Calculate the probability of clicking target pages from a source page,
+// page 1 -> pages 2,3,4 = 1/3 chance for each
+function formProbabilityMatrix(dFactor: number, matrix: number[][]): number[][] {
+  for (let r=0; r<matrix[0].length; r++) {
+    const totalOutgoingEdges: number = getTotalOutgoingEdges(matrix[r]);
+    for (let c=0; c<matrix[0].length; c++) {
+      const currentEdge: number = matrix[r][c];
+      if (currentEdge > 0) {
+        matrix[r][c] = currentEdge/totalOutgoingEdges;
+      }
+    }
+  }
+
+  return matrix;
+}
+
+// function rankProbabilityMatrix(dFactor: number, matrix: number[][]): void {
+  
+// }
 
 function calculatePagerank(): void {
   let dFactor = Number((<HTMLInputElement>document.getElementById("d-factor")).value);
@@ -173,6 +203,8 @@ function calculatePagerank(): void {
   }
   
   let matrix: number[][] = formAdjacencyMatrix();
+  matrix = formProbabilityMatrix(dFactor, matrix);
+
 
   // console.log("----------");
 

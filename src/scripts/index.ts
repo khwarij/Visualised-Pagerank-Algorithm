@@ -135,65 +135,86 @@ resetButton?.addEventListener("click", function(): void {
 
 // Page rank algorithm
 
-// Creates the adjacency matrix to store edges between all nodes
-function formAdjacencyMatrix(): number[][] {
-  const matrix: number[][] = [];
+// function nextRank(dFactor: number, matrix: number[][], ranks: number[]): number[] {
   
-  const nodes = cy.nodes();
+//   const newRanks = new Array(ranks.length);
 
-  for (let r=0; r<nodes.length; r++) {
-    const newRow: number[] = new Array(nodes.length);
-    newRow.fill(0);
+//   for (let r=0; r<matrix[0].length; r++) {
+//     let total = 0;
+//     for (let c=0; c<matrix[0].length; c++) {
+//       total += matrix[r][c] * ranks[c];
+//     }
+//     newRanks[r] = total//(dFactor*total) + ((1-dFactor)/ranks.length);
+//   }
 
-    const currentSourceNode: NodeSingular = nodes[r];
-    const targetNodes: NodeCollection = currentSourceNode.connectedEdges().targets();
-    
-    for (let i=0; i<targetNodes.length; i++) {
-      const currentTargetNode: NodeSingular = targetNodes[i];
-
-      if (currentTargetNode !== currentSourceNode) {
-        newRow[Number(currentTargetNode.id())] = 1;
-      }
-    }
-
-    matrix.push(newRow);
-  }
+//   console.log(newRanks);
   
-  return matrix;
-}
-
-// Gets the total number of outgoing links a page has to another page
-// used to get the full probability matrix
-function getTotalOutgoingEdges(row: number[]): number {
-  let rowTotal = 0;
-  for (let c=0; c<row.length; c++) {
-    if (row[c] > 0) {
-      rowTotal++;
-    }
-  }
-
-  return rowTotal;
-}
-
-// Calculate the probability of clicking target pages from a source page,
-// page 1 -> pages 2,3,4 = 1/3 chance for each
-function formProbabilityMatrix(dFactor: number, matrix: number[][]): number[][] {
-  for (let r=0; r<matrix[0].length; r++) {
-    const totalOutgoingEdges: number = getTotalOutgoingEdges(matrix[r]);
-    for (let c=0; c<matrix[0].length; c++) {
-      const currentEdge: number = matrix[r][c];
-      if (currentEdge > 0) {
-        matrix[r][c] = currentEdge/totalOutgoingEdges;
-      }
-    }
-  }
-
-  return matrix;
-}
-
-// function rankProbabilityMatrix(dFactor: number, matrix: number[][]): void {
-  
+//   return newRanks;
 // }
+
+// function transpose(matrix: number[][]): number[][] {
+//   return matrix[0].map((col, i) => matrix.map(row => row[i]));
+// }
+
+function getTotalOutgoingEdges(matrix: number[][]): number[] {
+  const edgeTotals: number[] = [];
+
+  for (let c=0; c<matrix[0].length; c++) {
+    let totalEdges = 0;
+    for (let r=0; r<matrix[0].length; r++) {
+      totalEdges += matrix[r][c];
+    }
+    edgeTotals[c] = totalEdges;
+  }
+
+  return edgeTotals;
+}
+
+function formProbabilityMatrix(dFactor: number, nodeTotal: number, edgeTotals: number[], matrix: number[][]): number[][] {
+
+  const additionalProb = (1 - dFactor) / nodeTotal;
+
+  for (let c=0; c<nodeTotal; c++) {
+    if (edgeTotals[c] === 0) {
+      for (let r=0; r<nodeTotal; r++) {
+        matrix[r][c] = (1.0 / nodeTotal) + additionalProb;
+      }
+    }
+  }
+}
+
+// Form transposed adjacency matrix
+function formAdjacencyMatrix(nodeTotal: number): number[][] {
+  const matrix: number[][] = new Array(nodeTotal);
+
+  // Initialise empty '0' matrix
+  for( let r = 0; r < nodeTotal; r++ ){
+    const newRow = new Array(nodeTotal);
+    for( let c = 0; c < nodeTotal; c++ ){
+      newRow[c] = 0;
+    }
+    matrix[r] = newRow;
+  }
+
+  const edges = cy.edges();
+  
+  for (let i=0; i<edges.length; i++) {
+    const edge = edges[i];
+
+    const sourceNodeID: number = Number(edge.source().id());
+    const targetNodeID: number = Number(edge.target().id());
+
+    // If source and target are the same node, ignore edge
+    if (sourceNodeID === targetNodeID) {
+      continue;
+    }
+
+    matrix[targetNodeID][sourceNodeID] += 1;
+  }
+
+  return matrix;
+}
+
 
 function calculatePagerank(): void {
   let dFactor = Number((<HTMLInputElement>document.getElementById("d-factor")).value);
@@ -201,10 +222,37 @@ function calculatePagerank(): void {
   if (isNaN(dFactor) || dFactor < 0 || dFactor > 1) {
     dFactor = 0;
   }
-  
-  let matrix: number[][] = formAdjacencyMatrix();
-  matrix = formProbabilityMatrix(dFactor, matrix);
 
+  const nodeTotal = cy.nodes().length;
+
+  let matrix: number[][] = formAdjacencyMatrix(nodeTotal);
+  let totalOutgoingEdges: number[] = getTotalOutgoingEdges(matrix);
+
+  console.clear();
+  let pr = cy.elements().pageRank({"dampingFactor": 0.85});
+
+  console.log(totalOutgoingEdges);
+
+  // cy.nodes().each(function(ele, i) {
+  //   pr.rank(ele);
+  // });
+
+  // ranks = [1/3, 1/3, 1/3];
+
+  // matrix = [
+  //   [0.5, 0.5, 0],
+  //   [0.5,0,0],
+  //   [0,0.5,1]
+  // ]
+  
+  // for (let i=0; i<200; i++) {
+  //   ranks = nextRank(dFactor, matrix, ranks); 
+  // }
+
+  // console.log("-----------");
+  // for (let i=0; i<ranks.length; i++) {
+  //   console.log(ranks[i]);
+  // }
 
   // console.log("----------");
 

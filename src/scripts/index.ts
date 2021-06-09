@@ -252,5 +252,10 @@ function calculatePagerank(): void {
   for (let i=0; i<200; i++) {
     ranks = nextRanks(nodeTotal, ranks, matrix);
   }
-  
+
+  for (let i=0; i<nodeTotal; i++) {
+    cy.nodes("[id = '"+i+"']").style({
+      "content": "Page "+i+"\n"+Math.round(ranks[i]*1000)/1000
+    });
+  }
 }

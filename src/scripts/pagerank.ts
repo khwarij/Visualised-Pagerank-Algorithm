@@ -96,7 +96,7 @@ export function formAdjacencyMatrix(cy: Core, nodeTotal: number): number[][] {
 }
   
   
-export function calculatePagerank(cy: Core): void {
+export function calculatePagerank(cy: Core): number[] {
     let dFactor = Number((<HTMLInputElement>document.getElementById("d-factor")).value);
     
     if (isNaN(dFactor) || dFactor < 0 || dFactor > 1) {
@@ -123,4 +123,6 @@ export function calculatePagerank(cy: Core): void {
         "content": "Page "+i+"\n"+Math.round(ranks[i]*1000)/1000
       });
     }
+
+    return ranks;
 }

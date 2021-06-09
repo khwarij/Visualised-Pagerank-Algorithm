@@ -135,27 +135,6 @@ resetButton?.addEventListener("click", function(): void {
 
 // Page rank algorithm
 
-// function nextRank(dFactor: number, matrix: number[][], ranks: number[]): number[] {
-  
-//   const newRanks = new Array(ranks.length);
-
-//   for (let r=0; r<matrix[0].length; r++) {
-//     let total = 0;
-//     for (let c=0; c<matrix[0].length; c++) {
-//       total += matrix[r][c] * ranks[c];
-//     }
-//     newRanks[r] = total//(dFactor*total) + ((1-dFactor)/ranks.length);
-//   }
-
-//   console.log(newRanks);
-  
-//   return newRanks;
-// }
-
-// function transpose(matrix: number[][]): number[][] {
-//   return matrix[0].map((col, i) => matrix.map(row => row[i]));
-// }
-
 function getTotalOutgoingEdges(matrix: number[][]): number[] {
   const edgeTotals: number[] = [];
 
@@ -170,6 +149,36 @@ function getTotalOutgoingEdges(matrix: number[][]): number[] {
   return edgeTotals;
 }
 
+function normaliseRanks(nodeTotal: number, ranks: number[]): number[] {
+  let total = 0;
+  
+  for (let i=0; i<nodeTotal; i++) {
+    total += ranks[i];
+  }
+
+  for (let i=0; i<nodeTotal; i++) {
+    ranks[i] = ranks[i] / total;
+  }
+
+  return ranks;
+}
+
+function nextRanks(nodeTotal: number, ranks: number[], matrix: number[][]): number[] {
+  const nextRanks = new Array(nodeTotal);  
+
+  for (let i=0; i<nodeTotal; i++) {
+    nextRanks[i] = 0;
+  }
+
+  for (let r=0; r<nodeTotal; r++) {
+    for (let c=0; c<nodeTotal; c++) {
+      nextRanks[r] += matrix[r][c] * ranks[c];
+    }
+  }
+
+  return normaliseRanks(nodeTotal, nextRanks);
+}
+
 function formProbabilityMatrix(dFactor: number, nodeTotal: number, edgeTotals: number[], matrix: number[][]): number[][] {
 
   const additionalProb = (1 - dFactor) / nodeTotal;
@@ -179,8 +188,14 @@ function formProbabilityMatrix(dFactor: number, nodeTotal: number, edgeTotals: n
       for (let r=0; r<nodeTotal; r++) {
         matrix[r][c] = (1.0 / nodeTotal) + additionalProb;
       }
+    } else {
+      for (let r=0; r<nodeTotal; r++) {
+        matrix[r][c] = (matrix[r][c]/edgeTotals[c]) + additionalProb;
+      }
     }
   }
+
+  return matrix;
 }
 
 // Form transposed adjacency matrix
@@ -227,41 +242,15 @@ function calculatePagerank(): void {
 
   let matrix: number[][] = formAdjacencyMatrix(nodeTotal);
   let totalOutgoingEdges: number[] = getTotalOutgoingEdges(matrix);
+  matrix = formProbabilityMatrix(dFactor, nodeTotal, totalOutgoingEdges, matrix);
 
-  console.clear();
-  let pr = cy.elements().pageRank({"dampingFactor": 0.85});
-
-  console.log(totalOutgoingEdges);
-
-  // cy.nodes().each(function(ele, i) {
-  //   pr.rank(ele);
-  // });
-
-  // ranks = [1/3, 1/3, 1/3];
-
-  // matrix = [
-  //   [0.5, 0.5, 0],
-  //   [0.5,0,0],
-  //   [0,0.5,1]
-  // ]
+  let ranks: number[] = new Array(nodeTotal);
+  for (let i=0; i<nodeTotal; i++) {
+    ranks[i] = 1;
+  }
   
-  // for (let i=0; i<200; i++) {
-  //   ranks = nextRank(dFactor, matrix, ranks); 
-  // }
-
-  // console.log("-----------");
-  // for (let i=0; i<ranks.length; i++) {
-  //   console.log(ranks[i]);
-  // }
-
-  // console.log("----------");
-
-  // for (let r=0; r<matrix[0].length; r++) {
-  //   let row = "";
-  //   for (let c=0; c<matrix[0].length; c++) {
-  //     row += matrix[r][c];
-  //   }
-  //   console.log(row);
-  // }
+  for (let i=0; i<200; i++) {
+    ranks = nextRanks(nodeTotal, ranks, matrix);
+  }
   
 }

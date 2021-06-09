@@ -92,11 +92,16 @@ function selectNode(selectedNode: NodeSingular): void {
   }
 }
 
-// Button event handlers
+// Event handlers
 
 const addPageButton = <HTMLButtonElement>document.getElementById("add-button");
 const deletePageButton = <HTMLButtonElement>document.getElementById("delete-button");
 const resetButton = <HTMLButtonElement>document.getElementById("reset-button");
+const dFactorInput = <HTMLInputElement>document.getElementById("d-factor");
+
+dFactorInput?.addEventListener("input", function(): void {
+  calculatePagerank();
+});
 
 deletePageButton?.addEventListener("click", function(): void {
   const selectedObj: NodeSingular | EdgeSingular = cy.$(":selected");

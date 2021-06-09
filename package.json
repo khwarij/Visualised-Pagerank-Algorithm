@@ -4,7 +4,7 @@
   "description": "The pagerank algorithm visualised in typescript",
   "main": "index.js",
   "scripts": {
-    "start": "tsc && browserify ./dist/scripts/index.js -o ./dist/scripts/index.js",
+    "start": "tsc && browserify ./dist/scripts/index.js -o ./dist/scripts/index.js && browserify ./dist/scripts/pagerank.js -o ./dist/scripts/pagerank.js",
     "lint": "eslint . --ext .ts",
     "test": "jest"
   },

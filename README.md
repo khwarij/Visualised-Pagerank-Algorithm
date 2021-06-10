@@ -1,5 +1,7 @@
 # Visualised-Pagerank-Algorithm
 
+Have a go via GitHub pages - https://unknown807.github.io/Visualised-Pagerank-Algorithm/
+
 ## Description
 
 After learning about pagerank I always wanted to understand it in more detail and how exactly to implement it in code myself. So using this example written in Javascript:

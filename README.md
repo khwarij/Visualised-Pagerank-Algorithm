@@ -1,11 +1,11 @@
 # Visualised-Pagerank-Algorithm
 
-Have a go via GitHub pages - https://unknown807.github.io/Visualised-Pagerank-Algorithm/
+Have a go via <a href="https://unknown807.github.io/Visualised-Pagerank-Algorithm/">GitHub pages</a>
 
 ## Description
 
-After learning about pagerank I always wanted to understand it in more detail and how exactly to implement it in code myself. So using this example written in Javascript:
-https://computerscience.chemeketa.edu/cs160Reader/_static/pageRankApp/index.html, and the cytoscape.js source code for pagerank I tried both implementing visualised page rank simulation and also learning typescript with which to write it in.
+After learning about pagerank I always wanted to understand it in more detail and how exactly to implement it in code myself. So using <a href="https://computerscience.chemeketa.edu/cs160Reader/_static/pageRankApp/index.html">this example</a> written in Javascript
+, and the cytoscape.js source code for pagerank I tried both implementing visualised page rank simulation and also learning typescript with which to write it in.
 
 ## Dependencies
 

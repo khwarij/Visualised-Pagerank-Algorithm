@@ -81,6 +81,7 @@ function selectNode(selectedNode: NodeSingular): void {
     
     cy.nodes("[id = '"+prevSelectedNodeID+"']").style("border-color", "black");
     cy.nodes("[id = '"+selectedNodeID+"']").style("border-color", "black");
+    cy.nodes("[id = '"+selectedNodeID+"']").sttyle("border-color", "white");
     
     selectedNode.unselect();
     prevSelectedNodeID = null;

@@ -66,6 +66,7 @@ export function formProbabilityMatrix(dFactor: number, nodeTotal: number, edgeTo
 // Form transposed adjacency matrix
 export function formAdjacencyMatrix(cy: Core, nodeTotal: number): number[][] {
     const matrix: number[][] = new Array(nodeTotal);
+    const matrix: number[][] = new Bit Array(nodeTotal);
   
     // Initialise empty '0' matrix
     for( let r = 0; r < nodeTotal; r++ ){
